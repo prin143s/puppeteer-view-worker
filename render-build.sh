@@ -1,3 +1,4 @@
 #!/bin/bash
-echo "Installing with legacy-peer-deps..."
-npm install --legacy-peer-deps
+echo "Installing Puppeteer Chromium"
+npx puppeteer browsers install chrome
+node index.js
