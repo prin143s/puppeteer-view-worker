@@ -11,12 +11,29 @@ app.post("/view", async (req, res) => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage"
+      ]
     });
 
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle2" });
-    await page.waitForTimeout(3000); // wait for view
+
+    // 🧠 Add real browser headers
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+      "(KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    );
+
+    await page.setViewport({ width: 1366, height: 768 });
+
+    await page.goto(url, {
+      waitUntil: "networkidle2",
+      timeout: 30000  // 🕒 30s timeout
+    });
+
+    await page.waitForTimeout(3000); // Wait for view to count
     await browser.close();
 
     res.json({ success: true });
